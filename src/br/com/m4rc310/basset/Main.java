@@ -8,6 +8,8 @@ import br.com.m4rc310.basset.binders.BinderManager;
 import br.com.m4rc310.basset.binders.ComponentFactury;
 import br.com.m4rc310.basset.teste.Aluno;
 import br.com.m4rc310.basset.teste.Endereco;
+import br.com.m4rc310.basset.teste.TesteDeAcoes;
+import java.util.Date;
 import javax.swing.JDialog;
 import net.miginfocom.swing.MigLayout;
 
@@ -25,7 +27,7 @@ public class Main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        BinderManager.getInstance();
+//        BinderManager.getInstance();
         
         new Main().teste();
         
@@ -44,6 +46,7 @@ public class Main {
         j.setLayout(new MigLayout("inset 5"));
         
         Aluno aluno = new Aluno();
+        aluno.setDataNascimento(new Date());
         
         j.add(cf.getJPanel(aluno));
         j.pack();

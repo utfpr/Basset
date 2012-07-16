@@ -6,8 +6,10 @@
 package br.com.m4rc310.basset.binders;
 
 import br.com.m4rc310.utils.Primitives;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JComponent;
 import net.sf.trugger.scan.ClassScan;
 
 /**
@@ -70,10 +72,12 @@ public class BinderManager {
     }
     
     private void scanBinds(String packageNameNode){
+        
+        
         for (Class clazz : ClassScan.findAll().recursively().assignableTo(Binder.class).in(packageNameNode)) {
             try {
                 if(!clazz.isInterface()){
-                    if(clazz == BinderImpl.class){continue;}
+                    if(clazz == BinderImpl.class)continue;
                     Binder obj = (Binder) clazz.newInstance();
                     binders.add(obj);
                 }
@@ -101,5 +105,21 @@ public class BinderManager {
         }
         return null;
     }
+    
+//    public Binder<Object,JComponent> getBinderDefault(final Object object, final JComponent component){
+//        return new BinderImpl<Object,JComponent>() {
+//
+//            @Override
+//            public Object getNewInstance() {
+//                return object;
+//            }
+//
+//            @Override
+//            public JComponent getComponent() {
+//                return component;
+//            }
+//        };
+//    }
+//    
     
 }

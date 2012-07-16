@@ -5,6 +5,9 @@
 
 package br.com.m4rc310.basset.teste;
 
+import br.com.m4rc310.basset.binders.annotations.Depends;
+import br.com.m4rc310.basset.binders.annotations.Label;
+import br.com.m4rc310.basset.binders.annotations.LayoutString;
 import java.util.Date;
 
 /**
@@ -13,11 +16,16 @@ import java.util.Date;
  */
 public class Aluno {
     private Long ra;
+    @LayoutString("growx, wrap")
     private String nome;
+    @LayoutString("growx, wrap")
     private String sobreNome;
+    
+    @Depends(method="isBloqueado")
     private Date dataNascimento;
     private EnumSexo sexo;
     
+    @Label(value="Endereço:", stringLayout="wrap")
     private Endereco endereco;
     
     private boolean bloqueado;
@@ -77,4 +85,6 @@ public class Aluno {
     public void setEndereco(Endereco endereco) {
         this.endereco = endereco;
     }
+    
+    
 }

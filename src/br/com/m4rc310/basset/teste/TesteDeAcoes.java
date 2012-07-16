@@ -5,18 +5,30 @@
 
 package br.com.m4rc310.basset.teste;
 
+import br.com.m4rc310.basset.binders.annotations.*;
+
 /**
  *
  * @author tchulla
  */
 public class TesteDeAcoes {
-    private String string;
+    
+    @Component
+    @Label(ignore=true)
+    private Aluno aluno;
 
-    public String getString() {
-        return string;
+    public Aluno getAluno() {
+        return aluno;
     }
 
-    public void setString(String string) {
-        this.string = string;
+    public void setAluno(Aluno aluno) {
+        this.aluno = aluno;
     }
+    
+    @Command(text="Salvar",type= CommandType.JBUTTON)
+    public void salvar(){
+        System.out.println("Salvando: " + aluno);
+//        return true;
+    }
+    
 }

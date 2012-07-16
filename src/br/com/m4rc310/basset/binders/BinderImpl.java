@@ -9,6 +9,8 @@ import br.com.m4rc310.basset.mycomponents.jtextfieldsearch.JTextFieldSearch;
 import br.com.m4rc310.basset.mycomponents.jtextfieldsearch.SearchConnector;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  *
@@ -18,11 +20,36 @@ public abstract class BinderImpl<M, V> implements Binder<M, V> {
 
     protected M model;
     protected V view;
+    
+    private Collection<BinderListeners> binderListenerses;
 
     private Method methodInc;
     private Object object;
-    
 
+    public BinderImpl() {
+        binderListenerses = new ArrayList<BinderListeners>();
+    }
+
+    @Override
+    public synchronized void removeBinderListenerses(BinderListeners bl) {
+        binderListenerses.remove(bl);
+    }
+    
+    @Override
+    public synchronized void addBinderListenerses(BinderListeners bl) {
+        if(!binderListenerses.contains(bl)){
+            binderListenerses.add(bl);
+        }
+    }
+
+    protected void fireChangeComponent(){
+        synchronized(this){
+            for (BinderListeners bl : binderListenerses) {
+                bl.changeComponent(model, view);
+            }
+        }
+    }
+    
     @Override
     public void setMethodInc(Method methodInc) {
         this.methodInc = methodInc;
@@ -31,11 +58,13 @@ public abstract class BinderImpl<M, V> implements Binder<M, V> {
     @Override
     public void setObject(Object object) {
         this.object = object;
+        fireChangeComponent();
     }
     
     protected void putModel(M m){
         try {
             methodInc.invoke(object, m);
+            fireChangeComponent();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -60,9 +89,6 @@ public abstract class BinderImpl<M, V> implements Binder<M, V> {
     @Override
     public void updateModel(V view) {
     }
-    
-    
-    
     
     @Override
     public void setModelAndView(M model, V view) {

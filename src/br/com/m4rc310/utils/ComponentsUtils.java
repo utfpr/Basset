@@ -41,6 +41,13 @@ public class ComponentsUtils {
         return panel;
     }
     
+    public JButton getJButton(String label){
+        JButton button = new JButton(label);
+        setFont(button);
+        
+        return button;
+    }
+    
     public void setEnable(boolean value, JComponent ... components){
         for (JComponent com : components) {
             com.setEnabled(value);

@@ -15,6 +15,9 @@ public interface Binder <M,V> {
     void setModelAndView(M model, V view);
     void addListeners();
     
+    void addBinderListenerses(BinderListeners bl);
+    void removeBinderListenerses(BinderListeners bl);
+    
     void setInitModel(M model);
             
     void updateModel(V view);
