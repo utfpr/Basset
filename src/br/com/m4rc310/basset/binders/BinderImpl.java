@@ -53,6 +53,7 @@ public abstract class BinderImpl<M, V> implements Binder<M, V> {
     @Override
     public void setMethodInc(Method methodInc) {
         this.methodInc = methodInc;
+        fireChangeComponent();
     }
 
     @Override

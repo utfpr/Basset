@@ -12,7 +12,9 @@ import java.awt.event.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
@@ -27,11 +29,10 @@ public class ComponentFactury {
 
     private Object teste;
     private ComponentsUtils ju;
-    
-    private List<EnableComponent> listComponents;
-    
+    private EventForComponents eventComponent;
+
     public ComponentFactury() {
-        listComponents = new ArrayList<EnableComponent>();
+        eventComponent = new EventForComponents();
         ju = new ComponentsUtils();
         teste = new Object();
     }
@@ -72,32 +73,31 @@ public class ComponentFactury {
 
 
                     bind.addBinderListenerses(new BinderListeners() {
+
                         @Override
                         public void changeComponent(Object obj, Object component) {
-                            
-                            for (EnableComponent ec : listComponents) {
-                                ec.processEnable();
-                            }
-                            
-                            
+                            eventComponent.processEnable();
                         }
                     });
-                    
+
                     if (field.isAnnotationPresent(Depends.class)) {
                         Depends depends = field.getAnnotation(Depends.class);
-                        
+
 //                        System.out.println(o.getClass().getDeclaredMethod(depends.method()));
-                        
+
                         Method m = o.getClass().getMethod(depends.method());
-                        listComponents.add(new EnableComponent(o, m , com));
+//                        eventComponent.add(new EventForComponents(o, m, com));
+                        eventComponent.addComponent(o, m, com);
                     }
-                    
+
                 }
 
             } catch (Exception ex) {
                 Logger.getLogger(ComponentFactury.class.getName()).log(Level.SEVERE, null, ex);
             }
-
+            
+            eventComponent.processEnable();
+            
             return com;
 
         } else {
@@ -116,14 +116,6 @@ public class ComponentFactury {
                         binder.setModelAndView(object, new ComponentFactury().getJPanel(object));
 
                         binder.setObject(object);
-
-
-
-//                        if(object==null){
-//                            return new ComponentFactury().getJPanel(field.getType().newInstance());
-//                        }else{
-//                            return new ComponentFactury().getJPanel(object);
-//                        }
 
                     } else {
                         Logger.getLogger(ComponentFactury.class.getName()).log(Level.INFO, "Não há um metodo GET para o parametro: {0}", field.getName());
@@ -189,12 +181,15 @@ public class ComponentFactury {
                 if (com != null) {
                     JLabel label = ju.getJLabel("");
 
-
                     if (field.isAnnotationPresent(Label.class)) {
                         Label l = field.getAnnotation(Label.class);
                         label.setText(B.getString(l.value()));
 
                         if (l.ignore()) {
+                            if(com instanceof AbstractButton){
+                                ((AbstractButton)com).setText(
+                                        B.getString(o.getClass().getSimpleName().toLowerCase() + "." + field.getName()));
+                            }
                             p.add(com, g(com.getName(), "wrap, split, span, growx"));
                         } else {
                             p.add(label);
@@ -290,25 +285,28 @@ public class ComponentFactury {
             public void mouseClicked(MouseEvent me) {
                 JComponent com = (JComponent) me.getComponent();
                 com.setBorder(BorderFactory.createTitledBorder(""));
-
-//                p.add(new ComponentFactury().getJPanel(com));
-
             }
         };
     }
-    
-    private class EnableComponent{
-        private Object object;
-        private Method method;
-        private JComponent component;
 
-        public EnableComponent() {
+    private class EventForComponents {
+
+        private Object object;
+        private Map<JComponent, Method> maps;
+
+        public EventForComponents() {
+            maps = new HashMap<JComponent, Method>();
         }
 
-        public EnableComponent(Object object, Method method, JComponent component) {
+        public EventForComponents(Object object) {
             this.object = object;
-            this.method = method;
-            this.component = component;
+        }
+
+        public synchronized void addComponent(Object object, Method method, JComponent component) {
+            if (!maps.containsKey(component)) {
+                this.object = object;
+                maps.put(component, method);
+            }
         }
 
         @Override
@@ -322,16 +320,35 @@ public class ComponentFactury {
             hash = 61 * hash + (this.object != null ? this.object.hashCode() : 0);
             return hash;
         }
-        
-        public void processEnable(){
+
+        public void processEnable() {
             try {
-                Boolean value = (Boolean) method.invoke(object);
-                component.setEnabled(value);
+                
+                for (Map.Entry<JComponent, Method> entry : maps.entrySet()) {
+                    JComponent jComponent = entry.getKey();
+                    Method m = entry.getValue();
+                    
+                    Boolean value = (Boolean) m.invoke(object);
+                    jComponent.setEnabled(value);
+                }
+                
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }
-        
+
+        public void processVisible() {
+            try {
+                for (Map.Entry<JComponent, Method> entry : maps.entrySet()) {
+                    JComponent jComponent = entry.getKey();
+                    Method m = entry.getValue();
+                    
+                    Boolean value = (Boolean) m.invoke(object);
+                    jComponent.setEnabled(value);
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
-    
 }

@@ -15,7 +15,11 @@ import java.util.Date;
  * @author tchulla
  */
 public class Aluno {
+    @LayoutString("split")
     private Long ra;
+    @LayoutString("wrap")
+    @Label(ignore=true,value="Bloqueado")
+    private boolean bloqueado;
     @LayoutString("growx, wrap")
     private String nome;
     @LayoutString("growx, wrap")
@@ -23,12 +27,13 @@ public class Aluno {
     
     @Depends(method="isBloqueado")
     private Date dataNascimento;
+    
+    @Depends(method="isBloqueado")
     private EnumSexo sexo;
     
     @Label(value="Endereço:", stringLayout="wrap")
     private Endereco endereco;
     
-    private boolean bloqueado;
 
     public Long getRa() {
         return ra;

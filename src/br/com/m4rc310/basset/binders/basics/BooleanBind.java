@@ -28,9 +28,16 @@ public class BooleanBind extends BinderImpl<Boolean, JCheckBox> {
     @Override
     public void setMethodInc(Method methodInc) {
         super.setMethodInc(methodInc);
-        
     }
 
+    @Override
+    public void setModelAndView(Boolean model, JCheckBox view) {
+        super.setModelAndView(model, view);
+    }
+
+    
+    
+    
     @Override
     public void updateModel(JCheckBox view) {
         model = view.isSelected();
@@ -42,6 +49,7 @@ public class BooleanBind extends BinderImpl<Boolean, JCheckBox> {
         view.setSelected(model);
     }
 
+    
     
     @Override
     public Boolean getNewInstance() {
