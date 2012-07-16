@@ -11,6 +11,8 @@ import br.com.m4rc310.utils.JComponentsStringLayout;
 import java.awt.event.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
@@ -23,11 +25,15 @@ import resource.B;
  */
 public class ComponentFactury {
 
-    private Object o;
+    private Object teste;
     private ComponentsUtils ju;
-
+    
+    private List<EnableComponent> listComponents;
+    
     public ComponentFactury() {
+        listComponents = new ArrayList<EnableComponent>();
         ju = new ComponentsUtils();
+        teste = new Object();
     }
 
     public JComponent getComponent(final Object o, final Field field) {
@@ -63,32 +69,29 @@ public class ComponentFactury {
 
                     bind.setMethodInc(o.getClass().getDeclaredMethod(mtSet, field.getType()));
                     bind.setInitModel(value);
-                    
-                    bind.addBinderListenerses(new BinderListeners() {
 
+
+                    bind.addBinderListenerses(new BinderListeners() {
                         @Override
                         public void changeComponent(Object obj, Object component) {
-                            System.out.println("-");
-                            if(field.isAnnotationPresent(Depends.class)){
-                                Depends depends = field.getAnnotation(Depends.class);
-                                
-                                System.out.println(depends);
-                                
-                                try {
-                                    Method method = o.getClass().getMethod(depends.method(), Boolean.TYPE);
-                                    
-                                    Boolean value = (Boolean) method.invoke(o);
-                                    ((JComponent)component).setEnabled(value);
-                                    
-                                    System.out.println(value);
-                                    
-                                } catch (Exception e) {
-                                }
+                            
+                            for (EnableComponent ec : listComponents) {
+                                ec.processEnable();
                             }
+                            
+                            
                         }
                     });
                     
-
+                    if (field.isAnnotationPresent(Depends.class)) {
+                        Depends depends = field.getAnnotation(Depends.class);
+                        
+//                        System.out.println(o.getClass().getDeclaredMethod(depends.method()));
+                        
+                        Method m = o.getClass().getMethod(depends.method());
+                        listComponents.add(new EnableComponent(o, m , com));
+                    }
+                    
                 }
 
             } catch (Exception ex) {
@@ -106,21 +109,16 @@ public class ComponentFactury {
 
                     if (mtGet != null) {
                         final Object object = mtGet.invoke(o) == null ? field.getType().newInstance() : mtGet.invoke(o);
-                        
+
                         Binder binder = new ObjectBind();
-                        
+
                         binder.addListeners();
                         binder.setModelAndView(object, new ComponentFactury().getJPanel(object));
-                        
+
                         binder.setObject(object);
-                        
-                        
-                        
-                        System.out.println(object);
-                        
-                        
-                        
-                        
+
+
+
 //                        if(object==null){
 //                            return new ComponentFactury().getJPanel(field.getType().newInstance());
 //                        }else{
@@ -298,4 +296,42 @@ public class ComponentFactury {
             }
         };
     }
+    
+    private class EnableComponent{
+        private Object object;
+        private Method method;
+        private JComponent component;
+
+        public EnableComponent() {
+        }
+
+        public EnableComponent(Object object, Method method, JComponent component) {
+            this.object = object;
+            this.method = method;
+            this.component = component;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return object.equals(o);
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 3;
+            hash = 61 * hash + (this.object != null ? this.object.hashCode() : 0);
+            return hash;
+        }
+        
+        public void processEnable(){
+            try {
+                Boolean value = (Boolean) method.invoke(object);
+                component.setEnabled(value);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        
+    }
+    
 }
