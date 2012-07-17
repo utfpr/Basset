@@ -5,6 +5,9 @@
 
 package br.com.m4rc310.basset.teste;
 
+import br.com.m4rc310.basset.binders.annotations.Command;
+import br.com.m4rc310.basset.binders.annotations.Component;
+import br.com.m4rc310.basset.binders.annotations.ComponentType;
 import br.com.m4rc310.basset.binders.annotations.Depends;
 import br.com.m4rc310.basset.binders.annotations.Label;
 import br.com.m4rc310.basset.binders.annotations.LayoutString;
@@ -23,16 +26,25 @@ public class Aluno {
     @LayoutString("growx, wrap")
     private String nome;
     @LayoutString("growx, wrap")
+//    @Component(type= ComponentType.JLABEL)
     private String sobreNome;
     
+    @LayoutString("growx, wrap")
     @Depends(method="isBloqueado")
     private Date dataNascimento;
     
+    @LayoutString("growx, wrap")
     @Depends(method="isBloqueado")
     private EnumSexo sexo;
     
     @Label(value="Endereço:", stringLayout="wrap")
+    @LayoutString("growx, wrap")
     private Endereco endereco;
+    
+    @Command()
+    public void check(){
+        nome = "Marcel Lp";
+    }
     
 
     public Long getRa() {

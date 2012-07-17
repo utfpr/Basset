@@ -17,5 +17,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 //@Documented
 public @interface Component {
-    
+    ComponentType type() default ComponentType.JLABEL;
+    String value() default "";
+    String method() default "";
 }

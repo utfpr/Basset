@@ -157,14 +157,8 @@ public class DateUtils {
     public final static long MSEC_PER_DAY = MSEC_PER_HOUR * 24L; // Numero de milisegundos ao dia 
 
     public static Long getIdade(Date dataNascimento) throws Exception {
-        long d1 = getDate("19/01/2010").getTime();
-        System.out.println(d1);
-        long d2 = getDate("18/01/1979").getTime();
-        System.out.println(d2);
 
-        long difDay = ((d1 - d2) / (24 * 60 * 60 * 1000));
-
-        System.out.println(difDay);
+        long difDay = ((new Date().getTime() - dataNascimento.getTime()) / (24 * 60 * 60 * 1000));
 
 //        Calendar c = new GregorianCalendar();
 //        c.setTime(d1);

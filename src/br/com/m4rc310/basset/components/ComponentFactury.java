@@ -2,8 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.com.m4rc310.basset.binders;
+package br.com.m4rc310.basset.components;
 
+import br.com.m4rc310.basset.binders.Binder;
+import br.com.m4rc310.basset.binders.BinderListeners;
+import br.com.m4rc310.basset.binders.BinderManager;
 import br.com.m4rc310.basset.binders.annotations.*;
 import br.com.m4rc310.basset.binders.basics.ObjectBind;
 import br.com.m4rc310.utils.ComponentsUtils;
@@ -11,9 +14,7 @@ import br.com.m4rc310.utils.JComponentsStringLayout;
 import java.awt.event.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,13 +45,15 @@ public class ComponentFactury {
         if (bind != null) {
             JComponent com = bind.getComponent();
 
-
             com.setName(o.getClass().getName() + "." + field.getName());
 
             Method mtGet = getMethodsReturn(o, field);
             try {
 
                 if (mtGet == null) {
+                    Logger.getLogger(ComponentFactury.class.getName()).log(Level.WARNING, 
+                            "Metodos GET e SET não implementados para o modelo: {0}",
+                            o);
                     return com;
                 }
 
@@ -243,7 +246,7 @@ public class ComponentFactury {
 
                     switch (command.type()) {
                         case JBUTTON:
-                            jButtonRet = ju.getJButton(command.text());
+                            jButtonRet = ju.getJButton(command.label());
                     }
 
                     if (jButtonRet != null) {

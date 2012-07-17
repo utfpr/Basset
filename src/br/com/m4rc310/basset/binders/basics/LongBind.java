@@ -41,6 +41,7 @@ public class LongBind extends BinderImpl<Long, JTextField> {
     @Override
     public void addListeners() {
         view.setInputVerifier(new InputVerifier() {
+            
 
             @Override
             public boolean verify(JComponent jc) {

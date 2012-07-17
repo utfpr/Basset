@@ -4,11 +4,10 @@
  */
 package br.com.m4rc310.basset;
 
-import br.com.m4rc310.basset.binders.BinderManager;
-import br.com.m4rc310.basset.binders.ComponentFactury;
+import br.com.m4rc310.basset.components.ComponentFactury2;
 import br.com.m4rc310.basset.teste.Aluno;
+import br.com.m4rc310.basset.teste.Arquivo;
 import br.com.m4rc310.basset.teste.Endereco;
-import br.com.m4rc310.basset.teste.TesteDeAcoes;
 import java.util.Date;
 import javax.swing.JDialog;
 import net.miginfocom.swing.MigLayout;
@@ -39,7 +38,9 @@ public class Main {
         
     }
     private void teste() {
-        ComponentFactury cf = new ComponentFactury();
+        
+        ComponentFactury2 cf = new ComponentFactury2();
+        ComponentFactury2 cf2 = new ComponentFactury2();
         
         JDialog j = new JDialog();
         j.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -48,7 +49,13 @@ public class Main {
         Aluno aluno = new Aluno();
         aluno.setDataNascimento(new Date());
         
-        j.add(cf.getJPanel(aluno));
+        j.add(cf.getJPanel(aluno), "wrap");
+        
+        Arquivo arquivo = new Arquivo();
+        
+//        j.add(cf2.getJPanel(arquivo));
+        
+        
         j.pack();
         
         j.setModal(true);

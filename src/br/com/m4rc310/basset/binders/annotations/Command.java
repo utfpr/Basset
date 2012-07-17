@@ -14,7 +14,7 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Documented
 public @interface Command {
-    String text() default "";
+    String label() default "";
     CommandType type() default CommandType.JBUTTON;
     boolean enable() default false;
     

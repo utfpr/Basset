@@ -25,7 +25,7 @@ public class TesteDeAcoes {
         this.aluno = aluno;
     }
     
-    @Command(text="Salvar",type= CommandType.JBUTTON)
+    @Command(label="Salvar",type= CommandType.JBUTTON)
     public void salvar(){
         System.out.println("Salvando: " + aluno);
 //        return true;
